@@ -1,0 +1,47 @@
+name: CI/CD Dev Merge
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Install dependencies for frontend
+      run: |
+        cd frontend
+        npm install
+
+    - name: Install dependencies for backend
+      run: |
+        cd backend
+        npm install
+
+    - name: Run unit tests for frontend
+      run: |
+        cd frontend
+        npm test
+
+    - name: Run unit tests for backend
+      run: |
+        cd backend
+        npm test
+
+    - name: Merge dev into main
+      uses: devops-infra/github-actions-merge-branch@v2
+      with:
+        type: merge
+        source: dev
+        target: main
+        github_token: ${{ secrets.GITHUB_TOKEN }}
