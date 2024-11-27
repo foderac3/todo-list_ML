@@ -38,10 +38,16 @@ jobs:
         cd backend
         npm test
 
+    - name: Configure Git for the runner
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
     - name: Merge dev into main
-      uses: devops-infra/github-actions-merge-branch@v2
-      with:
-        type: merge
-        source: dev
-        target: main
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git fetch origin
+        git checkout main
+        git merge dev --no-ff
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
