@@ -11,7 +11,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - MONGO_URL=mongodb+srv://wandrille:wandrillepw@devops-lab.sohwk.mongodb.net/reverse_todo
+      - MONGO_URL=mongodb+srv://foderac3:fode2002@cluster.u4kc60a.mongodb.net/?retryWrites=true&w=majority&appName=CLUSTER
     networks:
       - app-network
 
