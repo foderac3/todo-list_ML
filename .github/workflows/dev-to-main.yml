@@ -40,7 +40,7 @@ jobs:
  
       - name: Merge dev into main
         if: success()
-        uses: pascalgn/automerge-action@v0.14.3
+        uses: devmasx/merge-branch@master
         with:
           from_branch: dev
           to_branch: main
