@@ -1,49 +1,44 @@
-name: CI on Dev Branch
- 
+name: CI - Feature to Dev
+
 on:
   push:
     branches:
       - dev
- 
-permissions:
-  contents: write  
-  pull-requests: write
 
 jobs:
-  build-test-merge:
+  build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
- 
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
- 
-      - name: Set up Node.js environment
+
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  
- 
+          node-version: 16
+
       - name: Install backend dependencies
         working-directory: ./backend
         run: npm install
- 
-      - name: Run backend unit tests
-        working-directory: ./backend
-        run: npm test
- 
+
       - name: Install frontend dependencies
         working-directory: ./frontend
         run: npm install
- 
-      - name: Run frontend unit tests
+
+      - name: Run backend tests
+        working-directory: ./backend
+        run: npm test
+
+      - name: Run frontend tests
         working-directory: ./frontend
         run: npm test
- 
+
       - name: Merge dev into main
-        if: success()
         uses: devmasx/merge-branch@master
         with:
           from_branch: dev
-          to_branch: main
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: main
+          github_token: ${{ secrets.TOKEN }}
+          type: now
