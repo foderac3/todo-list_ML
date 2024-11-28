@@ -1,0 +1,58 @@
+name: CI/CD on Main Branch
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+permissions:
+  contents: read
+ 
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+ 
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  
+ 
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm install
+ 
+      - name: Run backend unit tests
+        working-directory: ./backend
+        run: npm test
+ 
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+ 
+      - name: Run frontend unit tests
+        working-directory: ./frontend
+        run: npm test
+ 
+      - name: Log in to Docker Hub
+        if: success()
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+ 
+      - name: Build and push backend image
+        if: success()
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/reverse-todo-backend:latest ./backend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/reverse-todo-backend:latest
+ 
+      - name: Build and push frontend image
+        if: success()
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/reverse-todo-frontend:latest ./frontend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/reverse-todo-frontend:latest
+ 
