@@ -45,3 +45,5 @@ jobs:
           from_branch: dev
           to_branch: main
           github_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
